@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Exercise1</string>
+    <string name="increase">+</string>
+    <string name="decrease">-</string>
 </resources>

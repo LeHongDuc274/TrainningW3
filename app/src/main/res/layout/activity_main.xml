@@ -9,6 +9,8 @@
     tools:context=".MainActivity">
 
     <LinearLayout
+        android:background="@color/color1"
+        android:id="@+id/linear_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="3">
@@ -21,7 +23,7 @@
             android:gravity="center"
             android:text="0"
             android:textColor="@color/red"
-            android:textSize="40sp" />
+            android:textSize="@dimen/sp40" />
     </LinearLayout>
 
     <LinearLayout
@@ -35,13 +37,13 @@
             style="@style/btnStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="-"
+            android:text="@string/decrease"
             />
 
         <Button
             android:id="@+id/btn_increase"
             style="@style/btnStyle"
-            android:text="+"
+            android:text="@string/increase"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
     </LinearLayout>

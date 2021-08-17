@@ -5,10 +5,10 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.*
-import java.util.*
 
 class MainViewModel : ViewModel() {
-    val job = Job()
+    private val job1 = Job()
+    private val job2 = Job()
     private val _num: MutableLiveData<Int> = MutableLiveData(0)
     val num: LiveData<Int> = _num
 
@@ -16,7 +16,7 @@ class MainViewModel : ViewModel() {
     var lastTimeClick: Long? = null
 
     init {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.Default + job1) {
             while (isActive) {
                 delay(100)
                 if (lastTimeClick != null && ((System.currentTimeMillis() - lastTimeClick!!) >= 900))
@@ -24,16 +24,16 @@ class MainViewModel : ViewModel() {
             }
         }
 
-        viewModelScope.launch(Dispatchers.Default + job) {
+        viewModelScope.launch(Dispatchers.Default + job2) {
             while (isActive) {
-                delay(100L)
-                if (state == true) {
+                delay(50L)
+                if (state) {
                     if (_num.value!! > 0) {
                         decrease()
                     } else if (_num.value!! < 0) {
                         increase()
                     }
-                    delay(500)
+                    // delay(100)
                 }
             }
         }
