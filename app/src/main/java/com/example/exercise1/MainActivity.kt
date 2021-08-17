@@ -23,10 +23,11 @@ class MainActivity : AppCompatActivity() {
             viewModel.state = false
             viewModel.lastTimeClick = System.currentTimeMillis()
         }
-//        btn_decrease?.setOnClickListener {
-//        //    viewModel.decrease()
-//            viewModel.job.cancel()
-//        }
+        btn_decrease?.setOnClickListener {
+            viewModel.decrease()
+            viewModel.state = false
+            viewModel.lastTimeClick = System.currentTimeMillis()
+        }
         viewModel.num.observe(this, {
             tv.text = it.toString()
         })
@@ -41,18 +42,14 @@ class MainActivity : AppCompatActivity() {
             MotionEvent.ACTION_DOWN -> {
                 oldY = event!!.y
                 viewModel.state = false
-                viewModel.lastTimeClick = System.currentTimeMillis()
-
+                viewModel.lastTimeClick = null
                 Log.d("Tagd", "Action was DOWN ${viewModel.lastTimeClick}")
                 true
             }
             MotionEvent.ACTION_MOVE -> {
-                viewModel.state = false
-                viewModel.lastTimeClick = System.currentTimeMillis()
                 Log.d("Tagd", "Action was move ${viewModel.lastTimeClick} ${viewModel.state}")
                 val curY = event?.y
                 val deltaY = curY?.minus(oldY)
-
                 if (curY != null) {
                     oldY = curY
                 }
