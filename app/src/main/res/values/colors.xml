@@ -10,4 +10,11 @@
     <color name="red">#F44336</color>
     <color name="color1">#F8F5F5</color>
     <color name="color2">#FABCD6BA</color>
+    <color name="textColor1">#F44336</color>
+    <color name="textColor2">#1F7197</color>
+    <color name="textColor3">#E6C905</color>
+    <color name="textColor4">#191817</color>
+    <color name="textColor5">#2196F3</color>
+    <color name="textColor6">#753D4A</color>
+    <color name="textColor7">#B64757</color>
 </resources>
