@@ -8,7 +8,6 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.*
 import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.atomic.AtomicLong
-import kotlin.math.log
 
 class MainViewModel : ViewModel() {
     private val job1 = Job()
@@ -16,8 +15,8 @@ class MainViewModel : ViewModel() {
     private val _num: MutableLiveData<Int> = MutableLiveData(0)
     val num: LiveData<Int> = _num
 
+    // countdown state
     var state= AtomicBoolean(false) //Shared mutable state and concurrency
-
     var lastTimeClick = AtomicLong(0L)
 
     var lastNumberChangeColer : Int =0
