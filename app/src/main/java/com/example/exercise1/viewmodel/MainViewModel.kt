@@ -1,11 +1,13 @@
 package com.example.exercise1.viewmodel
 
-import android.util.Log
+import android.os.Handler
+import android.os.Looper
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.*
+import java.lang.Thread.currentThread
 import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.atomic.AtomicLong
 
@@ -16,47 +18,52 @@ class MainViewModel : ViewModel() {
     val num: LiveData<Int> = _num
 
     // countdown state
-    var state= AtomicBoolean(false) //Shared mutable state and concurrency
+    var state = AtomicBoolean(false) //Shared mutable state and concurrency
     var lastTimeClick = AtomicLong(0L)
 
-    var lastNumberChangeColer : Int =0
+    var lastNumberChangeColer: Int = 0
 
-    val _changeColor : MutableLiveData<Boolean> = MutableLiveData(false)
-    val changeColor : LiveData<Boolean> = _changeColor
+    val _changeColor: MutableLiveData<Boolean> = MutableLiveData(false)
+    val changeColor: LiveData<Boolean> = _changeColor
 
-    init {
-        viewModelScope.launch(Dispatchers.Default + job1) {
-            while (isActive) {
-                delay(50L)
-                if (lastTimeClick.get() != 0L  &&
-                    ((System.currentTimeMillis() - lastTimeClick.get()) >= 900L))
-                    state.set(true)
+    var threadCd = Thread()
+    val handler = Handler(Looper.getMainLooper())
+
+    val runnable = Runnable {
+        while (state.get()) {
+            try {
+                Thread.sleep(50L)
+            } catch (e: InterruptedException) {
+                e.printStackTrace()
             }
-        }
-
-        viewModelScope.launch(Dispatchers.Default + job2) {
-            while (isActive) {
-                delay(50L)
-                if (state.get()) {
-                    if (_num.value!! > 0) {
-                        decrease()
-                    } else if (_num.value!! < 0) {
-                        increase()
-                    }
-                    isChangeColer()
-                }
-            }
+            if (num.value!! < 0) increase()
+            else if (num.value!! > 0) decrease()
+            isChangeColer()
         }
     }
-    fun isChangeColer(){
+
+
+    fun stopThreadCoundownt() {
+        handler.removeCallbacksAndMessages(null)
+        if (threadCd.isInterrupted == false) threadCd.interrupt()
+    }
+
+    fun startThreadCoundownt() {
+        threadCd = Thread(runnable)
+        handler.postDelayed({ threadCd.start() }, 1000L)
+    }
+
+
+    fun isChangeColer() {
         if (Math.abs((num.value?.minus(lastNumberChangeColer))!!) > 100) {
-            Log.e("tag","${lastNumberChangeColer}")
+//            Log.e("tag", "${lastNumberChangeColer}")
             lastNumberChangeColer = num.value!!
             _changeColor.postValue(true)
-        } else{
+        } else {
             _changeColor.postValue(false)
         }
     }
+
     fun increase() {
         _num.postValue(_num.value?.plus(1))
     }

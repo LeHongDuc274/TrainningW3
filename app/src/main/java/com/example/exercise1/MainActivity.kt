@@ -21,22 +21,82 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        btn_increase?.setOnClickListener {
-            viewModel.increase()
-            viewModel.state.set(false)
-            viewModel.lastTimeClick.set(System.currentTimeMillis())
-            viewModel.isChangeColer()
-
+        btn_increase?.setOnTouchListener { v, event ->
+            val action: Int = MotionEventCompat.getActionMasked(event)
+            when (action) {
+                MotionEvent.ACTION_DOWN -> {
+                    viewModel.state.set(false)
+                    viewModel.stopThreadCoundownt()
+                    viewModel.increase()
+                    viewModel.isChangeColer()
+                    true
+                }
+                MotionEvent.ACTION_UP -> {
+                    viewModel.state.set(true)
+                    viewModel.startThreadCoundownt()
+                    true
+                }
+                else -> true
+            }
         }
-        btn_decrease?.setOnClickListener {
-            viewModel.decrease()
-            viewModel.state.set(false)
-            viewModel.lastTimeClick.set(System.currentTimeMillis())
-            viewModel.isChangeColer()
-
+        btn_decrease?.setOnTouchListener { v, event ->
+            val action: Int = MotionEventCompat.getActionMasked(event)
+            when (action) {
+                MotionEvent.ACTION_DOWN -> {
+                    viewModel.stopThreadCoundownt()
+                    viewModel.decrease()
+                    viewModel.isChangeColer()
+                    viewModel.state.set(false)
+                    true
+                }
+                MotionEvent.ACTION_UP -> {
+                    viewModel.state.set(true)
+                    viewModel.startThreadCoundownt()
+                    true
+                }
+                else -> true
+            }
         }
+
+        linear_layout.setOnTouchListener { _, event ->
+            val action: Int = MotionEventCompat.getActionMasked(event)
+            when (action) {
+                MotionEvent.ACTION_DOWN -> {
+                    oldY = event.y
+                    viewModel.isChangeColer()
+                    viewModel.state.set(false)
+                    viewModel.stopThreadCoundownt()
+                    true
+                }
+                MotionEvent.ACTION_MOVE -> {
+                    val curY = event.y
+                    val deltaY = curY.minus(oldY)
+                    oldY = curY
+                    if (deltaY > 5) {
+                        viewModel.decrease()
+                    } else if (deltaY < -5) {
+                        viewModel.increase()
+                    }
+                    true
+                }
+                MotionEvent.ACTION_UP -> {
+                    viewModel.state.set(true)
+                    viewModel.startThreadCoundownt()
+                    true
+                }
+                else -> true
+            }
+        }
+        obsever()
+    }
+
+    private fun obsever() {
         viewModel.num.observe(this, {
             tv.text = it.toString()
+            if (it == 0){
+                viewModel.state.set(false)
+                viewModel.stopThreadCoundownt()
+            }
         })
         viewModel.changeColor.observe(this, {
             if (it) {
@@ -51,37 +111,9 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         })
-
-        linear_layout.setOnTouchListener { _, event ->
-            val action: Int = MotionEventCompat.getActionMasked(event)
-            when (action) {
-                MotionEvent.ACTION_DOWN -> {
-                    oldY = event.y
-                    viewModel.isChangeColer()
-                    viewModel.state.set(false)
-                    viewModel.lastTimeClick.set(0L)
-                    true
-                }
-                MotionEvent.ACTION_MOVE -> {
-                    val curY = event.y
-                    val deltaY = curY.minus(oldY)
-                    oldY = curY
-                    viewModel._changeColor.value = false
-                    if (deltaY > 5) {
-                        viewModel.decrease()
-                    } else if (deltaY < -5) {
-                        viewModel.increase()
-                    }
-                    true
-                }
-                MotionEvent.ACTION_UP -> {
-                    viewModel.lastTimeClick.set(System.currentTimeMillis())
-                    true
-                }
-                else -> true
-            }
-        }
     }
+
+
     private val listColor: MutableList<Int> = mutableListOf(
         R.color.textColor1,
         R.color.textColor2,
@@ -91,7 +123,6 @@ class MainActivity : AppCompatActivity() {
         R.color.textColor6,
         R.color.textColor7
     )
-
 
 
 }
