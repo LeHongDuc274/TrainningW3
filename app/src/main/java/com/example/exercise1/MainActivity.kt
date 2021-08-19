@@ -23,34 +23,14 @@ class MainActivity : AppCompatActivity() {
 
         btn_increase?.setOnClickListener {
             viewModel.increase()
-            viewModel.state.set(false)
-            viewModel.lastTimeClick.set(System.currentTimeMillis())
-            viewModel.isChangeColer()
-
+            onButtonClick()
         }
         btn_decrease?.setOnClickListener {
             viewModel.decrease()
-            viewModel.state.set(false)
-            viewModel.lastTimeClick.set(System.currentTimeMillis())
-            viewModel.isChangeColer()
-
+            onButtonClick()
         }
-        viewModel.num.observe(this, {
-            tv.text = it.toString()
-        })
-        viewModel.changeColor.observe(this, {
-            if (it) {
-                var rand: Int = R.color.red
-                while (ContextCompat.getColor(this, rand) == tv.currentTextColor) {
-                    rand = listColor.random().toInt()
-                }
-                try {
-                    tv.setTextColor(ContextCompat.getColor(this, rand))
-                } catch (e : Resources.NotFoundException){
-                    tv.setTextColor(ContextCompat.getColor(this, R.color.textColor5))
-                }
-            }
-        })
+
+        observeData()
 
         linear_layout.setOnTouchListener { _, event ->
             val action: Int = MotionEventCompat.getActionMasked(event)
@@ -81,8 +61,34 @@ class MainActivity : AppCompatActivity() {
                 else -> true
             }
         }
-
     }
+
+    private fun observeData() {
+        viewModel.num.observe(this, {
+            tv.text = it.toString()
+        })
+
+        viewModel.changeColor.observe(this, {
+            if (it) {
+                var rand: Int = R.color.red
+                while (ContextCompat.getColor(this, rand) == tv.currentTextColor) {
+                    rand = listColor.random().toInt()
+                }
+                try {
+                    tv.setTextColor(ContextCompat.getColor(this, rand))
+                } catch (e: Resources.NotFoundException) {
+                    tv.setTextColor(ContextCompat.getColor(this, R.color.textColor5))
+                }
+            }
+        })
+    }
+
+    private fun onButtonClick() {
+        viewModel.state.set(false)
+        viewModel.lastTimeClick.set(System.currentTimeMillis())
+        viewModel.isChangeColer()
+    }
+
     private val listColor: MutableList<Int> = mutableListOf(
         R.color.textColor1,
         R.color.textColor2,
