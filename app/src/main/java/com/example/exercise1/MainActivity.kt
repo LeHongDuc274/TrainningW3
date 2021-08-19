@@ -83,15 +83,15 @@ class MainActivity : AppCompatActivity() {
         }
 
     }
-    private val listColor: MutableList<Int> = mutableListOf(
-        R.color.textColor1,
-        R.color.textColor2,
-        R.color.textColor3,
-        R.color.textColor4,
-        R.color.textColor5,
-        R.color.textColor6,
-        R.color.textColor7
-    )
+//    private val listColor: MutableList<Int> = mutableListOf(
+//        R.color.textColor1,
+//        R.color.textColor2,
+//        R.color.textColor3,
+//        R.color.textColor4,
+//        R.color.textColor5,
+//        R.color.textColor6,
+//        R.color.textColor7
+//    )
 
 //    override fun onTouchEvent(event: MotionEvent?): Boolean {
 //
